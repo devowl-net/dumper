@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Dumper
@@ -114,7 +116,10 @@ namespace Dumper
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
             "AAAAAAAAAAAAAAAAAAAAAAAAAAA =";
 
-        private const string DumpDir = "Minidump";
+        /// <summary>
+        /// Folder for saved minidumps.
+        /// </summary>
+        public const string DumpDirectory = "Minidump";
 
         [DllImport("dbghelp.dll")]
         private static extern bool MiniDumpWriteDump(IntPtr hProcess, int processId, IntPtr hFile, int dumpType,
@@ -123,12 +128,14 @@ namespace Dumper
         /// <summary>
         /// Write minidump to file.
         /// </summary>
+        /// <param name="ownProcess">Current process as minidump maker or out of process application.</param>
         /// <param name="minidumpType">Minidump type.</param>
-        public static void WriteDump(MinidumpType minidumpType = MinidumpType.MiniDumpWithFullMemory)
+        [MethodImpl(MethodImplOptions.NoOptimization)]
+        public static void WriteDump(bool ownProcess = true, MinidumpType minidumpType = MinidumpType.MiniDumpWithFullMemory)
         {
-            if (!Directory.Exists(DumpDir))
+            if (!Directory.Exists(DumpDirectory))
             {
-                Directory.CreateDirectory(DumpDir);
+                Directory.CreateDirectory(DumpDirectory);
             }
 
             var currentProcess = Process.GetCurrentProcess();
@@ -137,41 +144,46 @@ namespace Dumper
                 Path.GetRandomFileName().Replace(".", ""));
 
             var currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var filePath = Path.Combine(currentDir, DumpDir, fileName);
+            var filePath = Path.Combine(currentDir, DumpDirectory, fileName);
             var handler = currentProcess.Handle;
             var processId = currentProcess.Id;
 
-            //var arguments = string.Join(" ", new object[]
-            //{
-            //    handler,
-            //    processId,
-            //    filePath,
-            //    (int)minidumpType
-            //}.Select(arg => string.Format("\"{0}\"", arg.ToString())));
-
-            var minidumperPath = "Minidumper.exe";
-            using (var fileStream = new FileStream(filePath, FileMode.CreateNew))
+            Console.WriteLine($"Handle = {handler} ProcessId = {processId}");
+            if (ownProcess)
             {
-                MiniDumpWriteDump(
-                    handler,
-                    processId,
-                    fileStream.SafeFileHandle.DangerousGetHandle(),
-                    (int)minidumpType,
-                    IntPtr.Zero,
-                    IntPtr.Zero,
-                    IntPtr.Zero);
+                using (var fileStream = new FileStream(filePath, FileMode.CreateNew))
+                {
+                    MiniDumpWriteDump(
+                        handler,
+                        processId,
+                        fileStream.SafeFileHandle.DangerousGetHandle(),
+                        (int)minidumpType,
+                        IntPtr.Zero,
+                        IntPtr.Zero,
+                        IntPtr.Zero);
+                }
             }
+            else
+            {
+                var arguments = string.Join(" ", new object[]
+                {
+                    processId,
+                    (int)minidumpType,
+                    filePath
+                }.Select(arg => string.Format("\"{0}\"", arg.ToString())));
 
+                var minidumperPath = "Minidumper.exe";
 
-            //var minidumperPath = CreateMinidumper();
-            //var process = Process.Start(minidumperPath, string.Join(" ", arguments));
-            //if (process != null)
-            //{
-            //    process.WaitForExit(10000);
-            //    File.Delete(minidumperPath);
-            //}
+                //var minidumperPath = CreateMinidumper();
+                var process = Process.Start(minidumperPath, string.Join(" ", arguments));
+                if (process != null)
+                {
+                    process.WaitForExit(10000);
+                    //File.Delete(minidumperPath);
+                }
+            }
         }
-
+        
         private static string CreateMinidumper()
         {
             var fileName = Path.Combine(Path.GetTempPath(), Path.GetTempFileName() + ".exe");

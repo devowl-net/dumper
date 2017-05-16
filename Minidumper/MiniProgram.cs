@@ -1,32 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Minidumper
 {
-    public class Program
+    internal static class MiniProgram
     {
         [DllImport("dbghelp.dll")]
         private static extern bool MiniDumpWriteDump(IntPtr hProcess, int processId, IntPtr hFile, int dumpType,
             IntPtr exceptionParam, IntPtr userStreamParam, IntPtr callStackParam);
-        
+
         public static void Main(string[] args)
         {
-            if (args.Length != 4)
+            if (args.Length != 3)
             {
-                Console.WriteLine("Not enough arguments. 1) process handler 2) processId 3) filePath 4) minidumpType");
+                Console.WriteLine("Not enough arguments. 1) ProcessId 2) minidumpType 2) Minidump file path");
                 return;
             }
 
             try
             {
-                var handler = new IntPtr(int.Parse(args[0]));
-                var processId = int.Parse(args[1]);
+                var processId = int.Parse(args[0]);
+                var minidumpType = int.Parse(args[1]);
                 var filePath = args[2];
-                var minidumpType = int.Parse(args[3]);
+                var handler = Process.GetProcessById(processId).Handle;
 
                 using (var fileStream = new FileStream(filePath, FileMode.CreateNew))
                 {

@@ -7,22 +7,37 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dumper", "Dumper\Dumper.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minidumper", "Minidumper\Minidumper.csproj", "{DB90195E-0EAB-420C-B952-D16A7E15CA51}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Out of process dumper", "Out of process dumper", "{BE4412F6-6FE3-4216-82D6-B6EFA3EA90E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{142B925F-01CC-4847-8FC4-BB7365E5F9BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{142B925F-01CC-4847-8FC4-BB7365E5F9BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{142B925F-01CC-4847-8FC4-BB7365E5F9BA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{142B925F-01CC-4847-8FC4-BB7365E5F9BA}.Debug|x86.Build.0 = Debug|Any CPU
 		{142B925F-01CC-4847-8FC4-BB7365E5F9BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{142B925F-01CC-4847-8FC4-BB7365E5F9BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{142B925F-01CC-4847-8FC4-BB7365E5F9BA}.Release|x86.ActiveCfg = Release|Any CPU
+		{142B925F-01CC-4847-8FC4-BB7365E5F9BA}.Release|x86.Build.0 = Release|Any CPU
 		{DB90195E-0EAB-420C-B952-D16A7E15CA51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DB90195E-0EAB-420C-B952-D16A7E15CA51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB90195E-0EAB-420C-B952-D16A7E15CA51}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DB90195E-0EAB-420C-B952-D16A7E15CA51}.Debug|x86.Build.0 = Debug|Any CPU
 		{DB90195E-0EAB-420C-B952-D16A7E15CA51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB90195E-0EAB-420C-B952-D16A7E15CA51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB90195E-0EAB-420C-B952-D16A7E15CA51}.Release|x86.ActiveCfg = Release|x86
+		{DB90195E-0EAB-420C-B952-D16A7E15CA51}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DB90195E-0EAB-420C-B952-D16A7E15CA51} = {BE4412F6-6FE3-4216-82D6-B6EFA3EA90E7}
 	EndGlobalSection
 EndGlobal
